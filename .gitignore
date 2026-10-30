@@ -1,0 +1,15 @@
+.env
+.venv/
+venv/
+node_modules/
+dist/
+coverage/
+.pytest_cache/
+.coverage
+htmlcov/
+__pycache__/
+*.py[cod]
+*.joblib
+*.log
+.DS_Store
+Thumbs.db
