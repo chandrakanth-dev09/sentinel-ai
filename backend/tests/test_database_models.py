@@ -4,6 +4,7 @@ import pytest
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
+from app.core.config import Settings
 from app.core.database import Base
 from app.models import (
     ApplicationLog,
@@ -119,3 +120,9 @@ def test_required_entity_models_are_importable() -> None:
             Service,
         )
     )
+
+
+def test_postgres_connection_strings_use_psycopg_three() -> None:
+    settings = Settings(DATABASE_URL="postgres://sentinel:secret@db.example/sentinel")
+
+    assert settings.DATABASE_URL == "postgresql+psycopg://sentinel:secret@db.example/sentinel"

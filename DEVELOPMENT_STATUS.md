@@ -109,6 +109,13 @@
 - Browser smoke test against a temporary SQLite-backed API verified the overview and settings pages render populated API responses and empty-state data.
 - PostgreSQL/Redis runtime connectivity and browser-driven integration against a running backend remain unverified.
 
+## Hosting preparation
+
+- Added a Render Blueprint for a single web service serving the production React build and FastAPI API with a managed PostgreSQL database.
+- The API serves the SPA root and client-side routes when the frontend build is present; local development retains the JSON root response.
+- Normalized Render-style PostgreSQL connection strings to use the installed psycopg 3 driver.
+- Render account linking, live service provisioning, public URL verification, and hosted PostgreSQL behavior still require deployment approval and were not performed.
+
 ## Known limitations
 
 - WebSocket updates remain pending; overview, service, anomaly, and model views currently use HTTP polling.
@@ -116,3 +123,4 @@
 - Python dependencies are pinned directly but do not yet have a transitive lock; runtime compatibility will be verified during implementation.
 - Model evaluation uses the documented synthetic dataset only; performance on public or production telemetry is unknown.
 - The production frontend build may warn about large visualization-library chunks; route-level lazy loading reduces the initially loaded code.
+- Render deployment is configured but not provisioned; confirm current database/service pricing in Render before creating resources.

@@ -1,6 +1,7 @@
 from functools import lru_cache
 from pathlib import Path
 
+from pydantic import field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -19,6 +20,15 @@ class Settings(BaseSettings):
     MAX_INGEST_BATCH_SIZE: int = 500
     MAX_FUTURE_TIMESTAMP_SKEW_SECONDS: int = 300
     MODEL_PATH: str = "backend/models/isolation_forest.joblib"
+
+    @field_validator("DATABASE_URL", mode="before")
+    @classmethod
+    def use_psycopg_driver(cls, value: str) -> str:
+        if value.startswith("postgres://"):
+            return "postgresql+psycopg://" + value.removeprefix("postgres://")
+        if value.startswith("postgresql://"):
+            return "postgresql+psycopg://" + value.removeprefix("postgresql://")
+        return value
 
     model_config = SettingsConfigDict(
         env_file=PROJECT_ROOT / ".env",
