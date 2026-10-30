@@ -1,4 +1,5 @@
 import { NavLink, Outlet } from "react-router-dom";
+import { isApiConfigured } from "../services/api";
 
 const navigation = [
   { to: "/", label: "Overview", icon: "◫", end: true },
@@ -34,14 +35,19 @@ export function AppShell() {
           ))}
         </nav>
         <div className="sidebar-footer">
-          <span className="live-dot" /> Monitoring workspace
-          <small>API-backed telemetry</small>
+          <span className={isApiConfigured ? "live-dot" : "offline-dot"} />
+          {isApiConfigured ? "Monitoring workspace" : "Interface preview"}
+          <small>{isApiConfigured ? "API-backed telemetry" : "Backend API not connected"}</small>
         </div>
       </aside>
       <div className="main-column">
         <header className="topbar">
           <div className="breadcrumb">SentinelAI <span>/</span> Observability</div>
-          <div className="topbar-right"><span className="live-indicator"><i /> API-backed views</span></div>
+          <div className="topbar-right">
+            {isApiConfigured
+              ? <span className="live-indicator"><i /> API-backed views</span>
+              : <span className="hosting-notice" role="status">GitHub Pages · frontend only</span>}
+          </div>
         </header>
         <main className="page-content"><Outlet /></main>
       </div>

@@ -14,8 +14,13 @@ import type {
   ServiceDependency
 } from "../types";
 
+const apiBaseUrl = import.meta.env.VITE_API_BASE_URL
+  ?? (import.meta.env.DEV ? "http://localhost:8000/api/v1" : "");
+
+export const isApiConfigured = Boolean(apiBaseUrl) || import.meta.env.DEV;
+
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL ?? "http://localhost:8000/api/v1",
+  baseURL: apiBaseUrl || undefined,
   timeout: 15000,
   headers: { "Content-Type": "application/json" }
 });
@@ -100,6 +105,9 @@ export const registerDependency = async (
   (await api.post<ServiceDependency>("/services/dependencies", dependency)).data;
 
 export function getErrorMessage(error: unknown): string {
+  if (!isApiConfigured) {
+    return "This GitHub Pages site hosts the interface only. Deploy the SentinelAI API and set VITE_API_BASE_URL to enable live data and actions.";
+  }
   if (axios.isAxiosError(error)) {
     const detail: unknown = error.response?.data?.detail;
     if (typeof detail === "string") return detail;

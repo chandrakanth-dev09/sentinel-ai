@@ -45,11 +45,11 @@ The overview page summarizes service health and availability, active incidents, 
 
 Dashboard and monitoring views currently refresh through HTTP polling. WebSocket delivery is planned for a later phase. Simulated telemetry is explicitly labeled in the UI and API data.
 
-## Deploy on Render
+## Deploy the interface with GitHub Pages
 
-The repository includes a Render Blueprint at `render.yaml`. Create a new Blueprint from the GitHub repository and select this file. It provisions the FastAPI service, PostgreSQL database, and builds the React dashboard into the same service, so opening the service URL serves the interface at `/` and the API remains same-origin at `/api/v1`. The deployment runs the database migration at startup and trains the synthetic anomaly model during the build.
+The public repository includes a GitHub Actions workflow at `.github/workflows/deploy-pages.yml`. Each push to `main` that changes the frontend builds and publishes the interface. In the repository's **Settings → Pages**, choose **GitHub Actions** as the build and deployment source if it is not already enabled.
 
-Review Render's current service and database pricing before confirming Blueprint creation; hosted PostgreSQL may incur charges. After deployment, open the web service URL (not the repository URL). `/health/ready` checks API/database readiness and `/docs` opens the API documentation. The hosted database starts empty; run the simulator against the deployed URL to populate demo data.
+Once the Pages workflow succeeds, share `https://chandrakanth-dev09.github.io/sentinel-ai/`. Client-side routes have a Pages fallback, so links to pages within the interface also open directly. GitHub Pages only hosts static frontend files: it does not run FastAPI, PostgreSQL, model inference, or write actions. The deployed page clearly identifies itself as a frontend preview until a backend is hosted separately and `VITE_API_BASE_URL` is configured.
 
 ## Ingestion and simulator
 

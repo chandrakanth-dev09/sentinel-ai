@@ -39,6 +39,8 @@ a { color: inherit; text-decoration: none; }
 .sidebar-footer { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; margin-top: auto; padding: 13px 10px 0; border-top: 1px solid #1c2838; color: #a7b3c2; font-size: 11px; }
 .sidebar-footer small { width: 100%; padding-left: 17px; color: #64748a; font-size: 10px; }
 .live-dot, .live-indicator i { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 9px #4ed6b655; }
+.offline-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--warning); }
+.hosting-notice { padding: 6px 9px; border: 1px solid #685332; border-radius: 6px; background: #2b2418; color: var(--warning); font-size: 10px; }
 .main-column { min-width: 0; flex: 1; }
 .topbar { position: sticky; z-index: 5; top: 0; display: flex; align-items: center; justify-content: space-between; height: 58px; padding: 0 32px; border-bottom: 1px solid #1c2838; background: #0b111bdf; backdrop-filter: blur(14px); }
 .breadcrumb { color: #9aa8b9; font-size: 12px; }

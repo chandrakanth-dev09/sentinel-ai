@@ -11,7 +11,7 @@ import {
   YAxis
 } from "recharts";
 import { EmptyState, ErrorState, LoadingState, PageHeader, StatCard, StatusPill } from "../components/Feedback";
-import { getAnomalyHistory, getMetrics, getOverview } from "../services/api";
+import { getAnomalyHistory, getMetrics, getOverview, isApiConfigured } from "../services/api";
 import { useAsyncResource } from "../hooks/useAsyncResource";
 
 const chartColors = ["#4ed6b6", "#7d9cff", "#f0b970"];
@@ -20,10 +20,40 @@ function ChartPanel({ title, children }: { title: string; children: ReactNode })
   return <section className="panel chart-panel"><div className="panel-heading"><h2>{title}</h2><span className="panel-meta">Recent samples</span></div>{children}</section>;
 }
 
+function StaticDashboard() {
+  return (
+    <div className="page-stack">
+      <PageHeader
+        title="System overview"
+        subtitle="SentinelAI service monitoring and incident management interface."
+        action={<span className="source-pill">FRONTEND PREVIEW</span>}
+      />
+      <p className="notice notice-warning">
+        This GitHub Pages deployment hosts the interface only. Connect a separately hosted SentinelAI API to load telemetry and enable dashboard actions.
+      </p>
+      <div className="stat-grid">
+        <StatCard label="Monitored services" value="—" detail="Backend API required" />
+        <StatCard label="Degraded / critical" value="—" detail="Backend API required" />
+        <StatCard label="Active incidents" value="—" detail="Backend API required" />
+        <StatCard label="Anomalies · 24h" value="—" detail="Backend API required" />
+        <StatCard label="Availability" value="—" detail="Backend API required" />
+      </div>
+      <div className="chart-grid">
+        <ChartPanel title="CPU and memory utilization"><EmptyState title="Connect the API to load telemetry" /></ChartPanel>
+        <ChartPanel title="Response time and error rate"><EmptyState title="Connect the API to load telemetry" /></ChartPanel>
+        <ChartPanel title="Anomaly frequency"><EmptyState title="Connect the API to load anomaly history" /></ChartPanel>
+        <section className="panel recent-panel"><div className="panel-heading"><h2>Recent incidents</h2></div><EmptyState title="Connect the API to load incidents" /></section>
+      </div>
+    </div>
+  );
+}
+
 export function DashboardPage() {
-  const overview = useAsyncResource("overview", getOverview, 15000);
-  const metrics = useAsyncResource("all-metrics", getMetrics, 15000);
-  const anomalies = useAsyncResource("anomaly-history", getAnomalyHistory, 30000);
+  const overview = useAsyncResource("overview", isApiConfigured ? getOverview : async () => null, 15000);
+  const metrics = useAsyncResource("all-metrics", isApiConfigured ? getMetrics : async () => null, 15000);
+  const anomalies = useAsyncResource("anomaly-history", isApiConfigured ? getAnomalyHistory : async () => null, 30000);
+
+  if (!isApiConfigured) return <StaticDashboard />;
 
   if (overview.loading || metrics.loading || anomalies.loading) return <LoadingState label="Loading monitoring overview…" />;
   if (overview.error) return <ErrorState message={overview.error} onRetry={overview.reload} />;
@@ -41,6 +71,7 @@ export function DashboardPage() {
     const bucket = new Date(anomaly.detected_at).toLocaleDateString();
     anomalyCounts.set(bucket, (anomalyCounts.get(bucket) ?? 0) + 1);
   }
+
   const anomalyChartData = [...anomalyCounts.entries()].map(([date, count]) => ({ date, count }));
   const dataSource = overview.data.total_services === 0
     ? "Register a service or start the simulator to populate live telemetry."

@@ -111,10 +111,9 @@
 
 ## Hosting preparation
 
-- Added a Render Blueprint for a single web service serving the production React build and FastAPI API with a managed PostgreSQL database.
-- The API serves the SPA root and client-side routes when the frontend build is present; local development retains the JSON root response.
-- Normalized Render-style PostgreSQL connection strings to use the installed psycopg 3 driver.
-- Render account linking, live service provisioning, public URL verification, and hosted PostgreSQL behavior still require deployment approval and were not performed.
+- Added a GitHub Actions workflow to build and publish the React interface to GitHub Pages, including asset base paths and direct-route fallback.
+- The static overview explicitly indicates that GitHub Pages does not host the API, database, model inference, or write operations; no local API address is used in production.
+- GitHub Pages repository settings, public URL verification, and automated deployment still require a successful Actions run.
 
 ## Known limitations
 
@@ -123,4 +122,4 @@
 - Python dependencies are pinned directly but do not yet have a transitive lock; runtime compatibility will be verified during implementation.
 - Model evaluation uses the documented synthetic dataset only; performance on public or production telemetry is unknown.
 - The production frontend build may warn about large visualization-library chunks; route-level lazy loading reduces the initially loaded code.
-- Render deployment is configured but not provisioned; confirm current database/service pricing in Render before creating resources.
+- GitHub Pages hosts only the React frontend; API data and write actions need a separately hosted FastAPI backend and PostgreSQL database.

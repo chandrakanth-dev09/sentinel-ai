@@ -7,6 +7,7 @@ import { analyzeIncident, getAnomalyHistory, getIncident, getIncidents, getMetri
 import type { Incident, Overview } from "../types";
 
 vi.mock("../services/api", () => ({
+  isApiConfigured: true,
   analyzeIncident: vi.fn(),
   getAnomalyHistory: vi.fn(),
   getIncident: vi.fn(),
